@@ -10,6 +10,7 @@ import configparser
 import traceback
 import time
 from pathlib import Path
+import os
 import shutil
 
 browser = Selenium()
@@ -19,7 +20,7 @@ config = configparser.ConfigParser()
 
 config.read('config.ini')
 
-output_folder = "./output/"
+output_folder = os.getcwd() + "/output/"
 url = "https://itdashboard.gov"
 test_agency = config['DEFAULT']['TestAgency']
 MAX_RETRIES = 5
@@ -28,9 +29,6 @@ MAX_RETRIES = 5
 # -
 
 def initial_task():
-    if filesys.does_directory_exist(output_folder) is False:
-        filesys.create_directory(output_folder, exist_ok=True)
-
     if filesys.does_file_exist(output_folder + "agency_data.xlsx") is True:
         filesys.remove_file(output_folder + "agency_data.xlsx")
     excel.create_workbook(output_folder + "agency_data.xlsx", fmt="xlsx")
@@ -154,6 +152,7 @@ def download_pdfs():
 
 if __name__ == "__main__":
     try:
+        print(os.getcwd())
         initial_task()
         extract_agencies_list()
         write_agency_list_to_workbook()
