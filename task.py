@@ -147,10 +147,11 @@ def download_pdfs():
         browser.click_link("Download Business Case PDF")
         time.sleep(5)
         retry = 0
-        while filesys.does_file_not_exist(pdf_folder + file + ".pdf") is True\
-                and retry < 10:
+        while retry < 10:
             try:
-                shutil.move(download_dir + file + ".pdf", pdf_folder)
+                result = shutil.move(download_dir + file + ".pdf", pdf_folder)
+                if result is not None:
+                    break
             except FileNotFoundError:
                 retry += 1
                 time.sleep(1)
