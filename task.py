@@ -20,7 +20,7 @@ config = configparser.ConfigParser()
 
 config.read('config.ini')
 
-output_folder = "output/"
+output_folder = "./output/"
 url = "https://itdashboard.gov"
 test_agency = config['DEFAULT']['TestAgency']
 MAX_RETRIES = 5
@@ -134,7 +134,7 @@ def write_investment_to_workbook():
 
 
 def download_pdfs():
-    browser.set_download_directory(output_folder, download_pdf=True)
+    browser.set_download_directory(directory=output_folder, download_pdf=True)
     download_dir = str(Path.home()) + "/Downloads/"
     for file, link in list_of_links.items():
         browser.go_to(link)
@@ -144,7 +144,7 @@ def download_pdfs():
         retry = 0
         while filesys.does_file_not_exist(output_folder + file + ".pdf") and retry < 5:
             try:
-                shutil.move(download_dir + file + ".pdf", output_folder)
+                shutil.move(download_dir + file + ".pdf", output_folder + file + ".pdf")
             except FileNotFoundError:
                 retry += 1
                 time.sleep(1)
