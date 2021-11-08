@@ -143,14 +143,16 @@ def download_pdfs():
     download_dir = str(Path.home()) + "/Downloads/"
     for file, link in list_of_links.items():
         browser.go_to(link)
-        browser.wait_for_condition("return document.readyState=='complete'")
         browser.wait_until_element_is_visible("link:Download Business Case PDF")
         browser.click_link("Download Business Case PDF")
         time.sleep(5)
-        while filesys.does_file_not_exist(pdf_folder + file + ".pdf") is True:
+        retry = 0
+        while filesys.does_file_not_exist(pdf_folder + file + ".pdf") is True\
+                and retry < 10:
             try:
                 shutil.move(download_dir + file + ".pdf", pdf_folder)
             except FileNotFoundError:
+                retry += 1
                 time.sleep(1)
 
 
