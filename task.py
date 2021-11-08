@@ -19,8 +19,7 @@ config = configparser.ConfigParser()
 
 config.read('config.ini')
 
-workbook_folder = "./output/"
-pdf_folder = "./output/"
+output_folder = "./output/"
 url = "https://itdashboard.gov"
 test_agency = config['DEFAULT']['TestAgency']
 MAX_RETRIES = 5
@@ -29,14 +28,12 @@ MAX_RETRIES = 5
 # -
 
 def initial_task():
-    if filesys.does_directory_exist(workbook_folder) is False and\
-                filesys.does_directory_exist(pdf_folder) is False:
-        filesys.create_directory(workbook_folder, exist_ok=True)
-        filesys.create_directory(pdf_folder, exist_ok=True)
+    if filesys.does_directory_exist(output_folder) is False:
+        filesys.create_directory(output_folder, exist_ok=True)
 
-    if filesys.does_file_exist(workbook_folder + "agency_data.xlsx") is True:
-        filesys.remove_file(workbook_folder + "agency_data.xlsx")
-    excel.create_workbook(workbook_folder + "agency_data.xlsx", fmt="xlsx")
+    if filesys.does_file_exist(output_folder + "agency_data.xlsx") is True:
+        filesys.remove_file(output_folder + "agency_data.xlsx")
+    excel.create_workbook(output_folder + "agency_data.xlsx", fmt="xlsx")
     excel.save_workbook()
     excel.close_workbook()
 
@@ -58,7 +55,7 @@ def extract_agencies_list():
 
 
 def write_agency_list_to_workbook():
-    excel.open_workbook(workbook_folder + "agency_data.xlsx")
+    excel.open_workbook(output_folder + "agency_data.xlsx")
     excel.rename_worksheet("Sheet", "Agencies")
     excel.append_rows_to_worksheet(
         content=agency_table,
@@ -127,7 +124,7 @@ def scrape_agency_investment_table():
 
 
 def write_investment_to_workbook():
-    excel.open_workbook(workbook_folder + "/agency_data.xlsx")
+    excel.open_workbook(output_folder + "/agency_data.xlsx")
     excel.create_worksheet(test_agency)
     excel.append_rows_to_worksheet(
         content=tableData,
@@ -139,7 +136,7 @@ def write_investment_to_workbook():
 
 
 def download_pdfs():
-    browser.set_download_directory(pdf_folder)
+    browser.set_download_directory(output_folder)
     download_dir = str(Path.home()) + "/Downloads/"
     for file, link in list_of_links.items():
         browser.go_to(link)
@@ -147,11 +144,9 @@ def download_pdfs():
         browser.click_link("Download Business Case PDF")
         time.sleep(5)
         retry = 0
-        while retry < 10:
+        while filesys.does_file_not_exist(output_folder + file + ".pdf") and retry < 10:
             try:
-                result = shutil.move(download_dir + file + ".pdf", pdf_folder)
-                if result is not None:
-                    break
+                shutil.move(download_dir + file + ".pdf", output_folder)
             except FileNotFoundError:
                 retry += 1
                 time.sleep(1)
