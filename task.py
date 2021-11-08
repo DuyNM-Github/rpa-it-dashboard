@@ -10,7 +10,6 @@ import configparser
 import traceback
 import time
 from pathlib import Path
-import os
 import shutil
 
 browser = Selenium()
@@ -141,13 +140,10 @@ def download_pdfs():
         browser.wait_until_element_is_visible("link:Download Business Case PDF")
         browser.click_link("Download Business Case PDF")
         time.sleep(5)
-        retry = 0
-        while filesys.does_file_not_exist(output_folder + file + ".pdf") and retry < 5:
-            try:
-                shutil.move(download_dir + file + ".pdf", output_folder + file + ".pdf")
-            except FileNotFoundError:
-                retry += 1
-                time.sleep(1)
+        while filesys.does_file_not_exist(output_folder + file + ".pdf"):
+            time.sleep(5)
+            shutil.move(download_dir + file + ".pdf", output_folder + file + ".pdf")
+        time.sleep(1)
 
 
 if __name__ == "__main__":
