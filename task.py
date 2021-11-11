@@ -19,7 +19,7 @@ config = configparser.ConfigParser()
 
 config.read('config.ini')
 
-output_folder = f"{os.getcwd()}/"
+output_folder = f"{os.getcwd()}/output"
 url = "https://itdashboard.gov"
 test_agency = config['DEFAULT']['TestAgency']
 MAX_RETRIES = 5
@@ -151,8 +151,6 @@ def download_pdfs():
         destination = output_folder + file + ".pdf"
         while filesys.does_file_not_exist(current_dir) is True:
             pass
-        else:
-            break
 
 
 def move_pdfs():
