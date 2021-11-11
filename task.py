@@ -154,9 +154,9 @@ def download_pdfs():
 
 
 def move_pdfs():
-    source = f"{os.getcwd()}/" + file + ".pdf"
     destination = output_folder + file + ".pdf"
     for file in list_of_links.keys():
+        source = f"{os.getcwd()}/" + file + ".pdf"
         while filesys.does_file_not_exist(destination) is True:
             try:
                 shutil.move(source, destination)
