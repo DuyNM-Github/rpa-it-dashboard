@@ -121,7 +121,7 @@ def scrape_agency_investment_table():
 
 
 def write_investment_to_workbook():
-    excel.open_workbook(output_folder + "/agency_data.xlsx")
+    excel.open_workbook(output_folder + "agency_data.xlsx")
     excel.create_worksheet(test_agency)
     excel.append_rows_to_worksheet(
         content=tableData,
