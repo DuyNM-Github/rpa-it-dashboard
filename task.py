@@ -7,10 +7,10 @@ from RPA.FileSystem import FileSystem
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import StaleElementReferenceException
 import configparser
-import traceback
-import time
+import threading
 from pathlib import Path
 import shutil
+import os
 
 browser = Selenium()
 filesys = FileSystem()
@@ -19,7 +19,7 @@ config = configparser.ConfigParser()
 
 config.read('config.ini')
 
-output_folder = "./output/"
+output_folder = "{os.getcwd()}/"
 url = "https://itdashboard.gov"
 test_agency = config['DEFAULT']['TestAgency']
 MAX_RETRIES = 5
@@ -132,26 +132,38 @@ def write_investment_to_workbook():
     excel.close_workbook()
 
 
+def start_download_threads():
+    thread1 = Threading.thread(target=donwload_pdfs, name="Download Thread")
+    thread2 = Threading.thread(target=move_pdfs, name="Move File Thread")
+    
+    thread1.start()
+    thread2.start()
+    
+    thread2.join()
+
+
 def download_pdfs():
-    browser.set_download_directory(directory=output_folder, download_pdf=True)
-    download_dir = str(Path.home()) + "/Downloads/"
     for file, link in list_of_links.items():
         browser.go_to(link)
         browser.wait_until_element_is_visible("link:Download Business Case PDF")
         browser.click_link("Download Business Case PDF")
-        source = download_dir + file
-        destination = output_folder + file
-        time.sleep(5)
-        retry = MAX_RETRIES
-        while filesys.does_file_not_exist(output_folder + file)\
-                and retry < 5:
+        current_dir = "{os.getcwd()}/" + file + ".pdf"
+        destination = output_folder + file + ".pdf"
+        while filesys.does_file_not_exist(source) is True:
+            pass
+        else:
+            break
+
+
+def move_pdfs():
+    source = "{os.getcwd()}/" + file + ".pdf"
+    destination = output_folder + file + ".pdf"
+    for file in list_of_links.keys():
+        while filesys.does_file_not_exist(destination) is True:
             try:
                 shutil.move(source, destination)
             except FileNotFoundError:
-                print("File " + file + "not found. Retrying ...")
-                retry += 1
-                time.sleep(5)
-        time.sleep(1)
+                pass
 
 
 if __name__ == "__main__":
