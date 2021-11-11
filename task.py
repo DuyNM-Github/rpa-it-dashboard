@@ -133,8 +133,8 @@ def write_investment_to_workbook():
 
 
 def start_threads():
-    thread1 = Threading.thread(target=donwload_pdfs, name="Download Thread")
-    thread2 = Threading.thread(target=move_pdfs, name="Move File Thread")
+    thread1 = threading.Thread(target=donwload_pdfs, name="Download Thread")
+    thread2 = threading.Thread(target=move_pdfs, name="Move File Thread")
     
     thread1.start()
     thread2.start()
