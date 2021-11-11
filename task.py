@@ -149,7 +149,7 @@ def download_pdfs():
         browser.click_link("Download Business Case PDF")
         current_dir = f"{os.getcwd()}/" + file + ".pdf"
         destination = output_folder + file + ".pdf"
-        while filesys.does_file_not_exist(source) is True:
+        while filesys.does_file_not_exist(current_dir) is True:
             pass
         else:
             break
