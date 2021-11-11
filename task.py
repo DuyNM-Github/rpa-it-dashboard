@@ -19,7 +19,7 @@ config = configparser.ConfigParser()
 
 config.read('config.ini')
 
-output_folder = f"{os.getcwd()}/output"
+output_folder = f"{os.getcwd()}/output/"
 url = "https://itdashboard.gov"
 test_agency = config['DEFAULT']['TestAgency']
 MAX_RETRIES = 5
