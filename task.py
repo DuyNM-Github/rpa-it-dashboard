@@ -177,3 +177,5 @@ if __name__ == "__main__":
     finally:
         print("Task Ended")
         browser.close_all_browsers()
+        print(os.listdir(os.getcwd()))
+        print(os.listdir(output_folder))
