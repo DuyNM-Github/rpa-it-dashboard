@@ -19,7 +19,7 @@ config = configparser.ConfigParser()
 
 config.read('config.ini')
 
-output_folder = "{os.getcwd()}/"
+output_folder = f"{os.getcwd()}/"
 url = "https://itdashboard.gov"
 test_agency = config['DEFAULT']['TestAgency']
 MAX_RETRIES = 5
@@ -147,7 +147,7 @@ def download_pdfs():
         browser.go_to(link)
         browser.wait_until_element_is_visible("link:Download Business Case PDF")
         browser.click_link("Download Business Case PDF")
-        current_dir = "{os.getcwd()}/" + file + ".pdf"
+        current_dir = f"{os.getcwd()}/" + file + ".pdf"
         destination = output_folder + file + ".pdf"
         while filesys.does_file_not_exist(source) is True:
             pass
@@ -156,7 +156,7 @@ def download_pdfs():
 
 
 def move_pdfs():
-    source = "{os.getcwd()}/" + file + ".pdf"
+    source = f"{os.getcwd()}/" + file + ".pdf"
     destination = output_folder + file + ".pdf"
     for file in list_of_links.keys():
         while filesys.does_file_not_exist(destination) is True:
