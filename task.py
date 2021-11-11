@@ -132,7 +132,7 @@ def write_investment_to_workbook():
     excel.close_workbook()
 
 
-def start_download_threads():
+def start_threads():
     thread1 = Threading.thread(target=donwload_pdfs, name="Download Thread")
     thread2 = Threading.thread(target=move_pdfs, name="Move File Thread")
     
@@ -148,7 +148,6 @@ def download_pdfs():
         browser.wait_until_element_is_visible("link:Download Business Case PDF")
         browser.click_link("Download Business Case PDF")
         current_dir = f"{os.getcwd()}/" + file + ".pdf"
-        destination = output_folder + file + ".pdf"
         while filesys.does_file_not_exist(current_dir) is True:
             pass
 
@@ -171,7 +170,7 @@ if __name__ == "__main__":
         write_agency_list_to_workbook()
         scrape_agency_investment_table()
         write_investment_to_workbook()
-        download_pdfs()
+        start_threads()
     finally:
         print("Task Ended")
         browser.close_all_browsers()
